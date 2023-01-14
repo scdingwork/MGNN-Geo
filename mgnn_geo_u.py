@@ -69,11 +69,11 @@ setup_seed(0)
 
 def geodistance(lng1, lat1, lng2, lat2):
     # lng1,lat1,lng2,lat2 = (120.12802999999997,30.28708,115.86572000000001,28.7427)
-    lng1, lat1, lng2, lat2 = map(radians, [float(lng1), float(lat1), float(lng2), float(lat2)])  # 经纬度转换成弧度
+    lng1, lat1, lng2, lat2 = map(radians, [float(lng1), float(lat1), float(lng2), float(lat2)])  # 
     dlon = lng2 - lng1
     dlat = lat2 - lat1
     a = sin(dlat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(dlon / 2) ** 2
-    distance = 2 * asin(sqrt(a)) * 6371 * 1000  # 地球平均半径，6371km
+    distance = 2 * asin(sqrt(a)) * 6371 * 1000  #6371km
     distance = round(distance / 1000, 3)
     return distance
 
@@ -97,11 +97,11 @@ def get_node_attr2(filepath):
     node_attr_array = np.array(node_attr_list)  # .reshape(-1, 1)
     return node_attr_array
 
-def build_graph2(filepath):  # 可以运行的图组建代码 同时输出edge的特征
-    # 定义两组np array,一列是头部，一列是end，这个要求我输出两列或者两行列表即可
+def build_graph2(filepath):  # 
+    # 
     fr1 = open(filepath, 'r')
     src_list = []
-    dst_list = []  # 不是最终地标 而是某条边的节点
+    dst_list = []  # 
     edge_attr_list = []
     for line in fr1.readlines():
         str_list = line.strip('\r\n').split(sep=',')
@@ -115,23 +115,22 @@ def build_graph2(filepath):  # 可以运行的图组建代码 同时输出edge�
         dst_list.append(temp_dst)
         edge_attr_list.append(temp_node_attr)
 
-        # 手工重复一份，图本身还是原来的图，就是不知对其他的操作，比如traintest划分是否有影响
+        # 
         src_list.append(temp_dst)
         dst_list.append(temp_src)
         edge_attr_list.append(temp_node_attr)
 
     src = np.array(src_list)
     dst = np.array(dst_list)
-    edge_attr_array = np.array(edge_attr_list)  # .reshape(-1, 1)#这是一维的。。转成1x1维
+    edge_attr_array = np.array(edge_attr_list)  # .reshape(-1, 1)#
 
-    # Edges are directional in DGL; Make them bi-directional.
-    # dgl中是有向的，搞成双向的 才是无向图 但这里涉及到对特征的处理，需要把特征也重复一份，比较麻烦，最好是直接在生成数据的时候，或者读取数据的时候就直接复制一份边和边特征，这里就不用专门再复制一遍了
+    # 
     # u = np.concatenate([src, dst])#u和v？
     # v = np.concatenate([dst, src])
     u = src  # u和v？
     v = dst
     # Construct a DGLGraph
-    return dgl.DGLGraph((u, v)), edge_attr_array  # 图和节点就创建完毕了
+    return dgl.DGLGraph((u, v)), edge_attr_array  # 
 
 
 from sklearn import preprocessing
@@ -146,7 +145,7 @@ target_lon_label_dict = {}
 new_target_lat_label_dict = {}
 new_target_lon_label_dict = {}
 
-def train_test_val_new_targetscaler2(filepath):#含test和val的targetscaler
+def train_test_val_new_targetscaler2(filepath):#
     fr3 = open(filepath, 'r', encoding='UTF-8')
     target_lat_label_dict = {}
     target_lon_label_dict = {}
@@ -212,7 +211,7 @@ def train_test_val_new_targetscaler2(filepath):#含test和val的targetscaler
             lon_train_node_label_list.append(lon_label)
             delay_train_node_label_list.append(delay_label)
 
-    delay_train_node_id_list=train_node_id_list.copy()#定位 train id+中间路由器的id；以及延迟
+    delay_train_node_id_list=train_node_id_list.copy()#
     for key, item in node_id_delay.items():
         node_id = int(key)
         delay_label = item
@@ -238,7 +237,7 @@ def train_test_val_new_targetscaler2(filepath):#含test和val的targetscaler
 
     new_label_lat_array = target_scaler1.fit_transform(
         np.array(lat_train_node_label_list).reshape(-1, 1))
-    new_label_lon_array = target_scaler2.fit_transform(np.array(lon_train_node_label_list).reshape(-1, 1))  # 对target也进行转换？
+    new_label_lon_array = target_scaler2.fit_transform(np.array(lon_train_node_label_list).reshape(-1, 1))  
 
     new_label_lat_array = new_label_lat_array.astype(np.float32)  # RuntimeError: Found dtype Double but expected Float
     new_label_lon_array = new_label_lon_array.astype(np.float32)  # RuntimeError: Found dtype Double but expected Float
@@ -305,7 +304,7 @@ if __name__ == '__main__':
     filepath = os.path.split(os.path.realpath(__file__))[0]
     from time import time
     stamp = int(time())
-    result_path1 = filepath + '/output_mgnn_u_hk_/' + str(stamp) + '_loss.txt'  # 详细loss 演化过程
+    result_path1 = filepath + '/output_mgnn_u_hk_/' + str(stamp) + '_loss.txt'  # 
 
     if not os.path.exists("./output_mgnn_u_hk_"):
         os.makedirs("./output_mgnn_u_hk_/")
@@ -333,8 +332,8 @@ if __name__ == '__main__':
     if print_flag > 0:
         print('We have %d nodes.' % G.number_of_nodes())
         print('We have %d edges.' % G.number_of_edges())
-    embed = nn.Embedding(G.number_of_nodes(), node_embedding_size)  # 23216 x 16维 初始化embedding维度是16 我随便定的 是超参 需要调参
-    G.ndata['feat'] = embed.weight  # 节点初始化
+    embed = nn.Embedding(G.number_of_nodes(), node_embedding_size)  # 
+    G.ndata['feat'] = embed.weight  # 
 
     node_number = G.number_of_nodes()
 
@@ -366,7 +365,7 @@ if __name__ == '__main__':
     node_attr_tensor = torch.from_numpy(node_attr_array).to(torch.float32)
     edge_attr_tensor = torch.from_numpy(edge_attr_array).to(torch.float32)
     node_feat = torch.cat([inputs, node_attr_tensor], dim=1)
-    # 节点，度，变类型，边norm，数据，label以及图都转cuda
+    # 
     if use_cuda:
         node_feat = node_feat.cuda()
         edge_attr_tensor = edge_attr_tensor.cuda()  #
@@ -396,7 +395,7 @@ if __name__ == '__main__':
 
         y1_train_loss = loss_fn(y1_predict[train_labeled_nodes], new_lat_train_labels.squeeze(-1))
         y2_train_loss = loss_fn(y2_predict[train_labeled_nodes], new_lon_train_labels.squeeze(-1))
-        y3_train_loss = loss_fn(y3_predict[delay_train_labeled_nodes], delay_train_labels.squeeze(-1))#delay_train_labeled_nodes除了train还包含了中间路由器的id
+        y3_train_loss = loss_fn(y3_predict[delay_train_labeled_nodes], delay_train_labels.squeeze(-1))#delay_train_labeled_nodes
 
         total_loss = y1_train_loss + y2_train_loss + loss1_weight *  y3_train_loss
 
@@ -432,7 +431,7 @@ if __name__ == '__main__':
         #         print(perf_str)
         #-----------------------
 
-        optimizer.zero_grad()  # 固定3步 复制即可
+        optimizer.zero_grad()  # 
         total_loss.backward()
         optimizer.step()
 
@@ -444,7 +443,7 @@ if __name__ == '__main__':
                 net.cpu()
 
             if 1:#:(epoch%10==1):  #
-                y1_val_loss = loss_fn(y1_predict[val_labeled_nodes], new_lat_val_labels.squeeze(-1))  # 计算loss
+                y1_val_loss = loss_fn(y1_predict[val_labeled_nodes], new_lat_val_labels.squeeze(-1))  # loss
                 y2_val_loss = loss_fn(y2_predict[val_labeled_nodes], new_lon_val_labels.squeeze(-1))
                 y3_val_loss = loss_fn(y3_predict[val_labeled_nodes], delay_val_labels.squeeze(-1))
                 total_val_loss = y1_val_loss + y2_val_loss + loss1_weight *  y3_val_loss
@@ -481,8 +480,7 @@ if __name__ == '__main__':
                 fw1.flush()
                 cur_best_pre_0, stopping_step, should_stop = early_stopping(error_thisepoch, cur_best_pre_0,
                                                                             stopping_step, expected_order='dec',
-                                                                            flag_step=1000)#注意flag_step 50x打印epoch的间隔
-
+                                                                            flag_step=1000)#
                 # ---updater
                 y3_predict_copy = y3_predict.clone()
 
@@ -535,7 +533,7 @@ if __name__ == '__main__':
             #     # fw3.flush()
             #     print(dis_list)
             #
-            #     # # 输出指定epoch的val具体内容和test具体内容
+            #     # 
             #     # val1 = old_y1_predict[val_labeled_nodes_cpu]
             #     # val2 = old_y2_predict[val_labeled_nodes_cpu]
             #     # test1 = old_y1_predict[test_labeled_nodes_cpu]
