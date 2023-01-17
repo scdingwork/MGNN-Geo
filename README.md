@@ -1,7 +1,6 @@
 # MGNN-Geo
 
 
-Temporary code example for unreachable IIP geolocation method MGNN-Geo
+Code and data sample for MGNN-Geo will be added upon acceptance.
 
 
-Will add detailed introduction and formal codes upon acceptance.
